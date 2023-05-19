@@ -1,0 +1,55 @@
+.product-details h3 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.product-details .rating {
+  margin-bottom: 20px;
+}
+
+.product-details .rating a {
+  color: #000;
+  text-decoration: none;
+}
+
+.product-details .price {
+  font-size: 24px;
+  font-weight: bold;
+  color: #c49b63;
+  margin-bottom: 20px;
+}
+
+.product-details p {
+  margin-bottom: 20px;
+}
+
+.product-details form {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+.product-details .input-group-btn {
+  width: 30%;
+}
+
+.product-details .input-number {
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+  border: none;
+  background-color: #f5f5f5;
+}
+
+.product-details .btn-primary {
+  background-color: #c49b63;
+  border-color: #c49b63;
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.product-details .btn-primary:hover {
+  background-color: #a88e53;
+  border-color: #a88e53;
+}

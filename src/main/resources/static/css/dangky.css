@@ -1,0 +1,100 @@
+.grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.form {
+  background-color: #f8f9fa;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 5px rgba(50, 50, 50, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-floating {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.form-floating label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 12px;
+  font-weight: bold;
+  color: #495057;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+  transform-origin: top left;
+}
+
+.form-floating input {
+  display: block;
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: transparent;
+  background-clip: padding-box;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #ced4da;
+}
+
+.form-floating input:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #81b101;
+}
+
+.form-floating input:focus + label,
+.form-floating input:not(:placeholder-shown) + label {
+  transform: translateY(-30px) scale(0.75);
+  opacity: 1;
+}
+
+.btn-primary {
+  display: block;
+  width: 100%;
+  height: 50px;
+  margin-top: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #81b101;
+  border: none;
+  border-radius: 25px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: #6aae00;
+}
+
+.text--center {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.text--center a {
+  color: #81b101;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.text--center a:hover {
+  color: #6aae00;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  margin-left: 5px;
+  fill: #81b101;
+}

@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Product Detail</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+	integrity="sha512-3L5TJr5dQHbKt0y1+JxGd4+IbHdO9VrQHl4UaIwZ5d2yN7T7ZG3y1vY1T5dLq8u1XhF6jzY9ZBnUQ65Jx2N/CA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+	<div class="hero-wrap hero-bread"
+		style="background-image: url('/images/thumbnail1.png');">
+		<div class="container">
+			<div
+				class="row no-gutters slider-text align-items-center justify-content-center">
+				<div class="col-md-9 ftco-animate text-center">
+					<p class="breadcrumbs">
+						<span class="mr-2"><a asp-action="Index"
+							asp-controller="Home">giỏ Hàng</a></span> <span class="mr-2"><a
+							href="/gio-hang">Sản Phẩm</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<img th:src="@{/images/__${model.image}__}" class="img-fluid"
+					alt="Colorlib Template">
+			</div>
+			<div class="col-md-6">
+				<div class="product-info">
+					<span class="input-group-btn mr-2">
+						<button type="button" class="quantity-left-minus btn"
+							data-type="minus" data-field="">
+							<i class="ion-ios-remove"></i>
+						</button>
+					</span>
+
+					<h3 class="text_name" th:text="${model.name}"></h3>
+					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+						euismod euismod nisi, et posuere turpis lobortis sit amet. Integer
+						sit amet consequat ex, quis suscipit velit.</p>
+					<p class="price"
+						th:text="${model.price} +  'VND' + '/' + ${model.unit}">
+						<span></span>
+					</p>
+					<div class="quantity">
+						<label>Quantity:</label> <input type="number" id="quantity"
+							name="quantity" value="1" min="1" max="10">
+					</div>
+
+					<p>
+						<a id="btnCart" class="btn btn-primary text-black py-3 px-5">Thêm
+							vào giỏ hàng</a>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.0/dist/sweetalert2.min.css">
+<script src="/js/ajaxShop.js"></script>
+
+<script>
+	
+	$("#btnCart").click(function (e) {
+	    e.preventDefault()
+	    if (Number($("#quantity").val()) > Number("[[${model.amount}]]")) {
+	        Swal.fire({
+	            title: "Lỗi",
+	            icon: "error",
+	            text: "Không được mua số lượng vượt quá số lượng còn lại"
+	        })
+	        return;
+	    }
+	
+	    const quantity = Number($("#quantity").val())
+	    const toyId = Number("[[${model.toyId}]]")
+	    const image = "[[${model.image}]]"
+	    const price = Number("[[${model.price}]]")
+	    const subTotal = quantity * price
+	    const name = "[[${model.name}]]"
+		
+	    const data = {
+	        quantity,
+	        toyId,
+	        image,
+	        price,
+	        subTotal,
+	        name
+	    }
+	
+	    $.ajax({
+	        type: "POST",
+	        url: '/san-pham/them-gio-hang',
+	        contentType: 'application/json',
+	        data: JSON.stringify(data),
+	        success: function (response) {
+	            if (response.success === true) {
+	                Swal.fire({
+	                    title: "Thành Công !",
+	                    text: response.message,
+	                    icon: 'success',
+	                    timer: 1500
+	                })
+	            } else {
+	                Swal.fire({
+	                    title: "Thất Bại",
+	                    text: response.message,
+	                    icon: "error",
+	                    timer: 2000
+	                })
+	            }
+	        }
+	    })
+	})
+	</script>
+
+
+<script>
+	
+	$(document).ready(function () {
+	
+	    var quantitiy = 0;
+	    $('.quantity-right-plus').click(function (e) {
+	
+	        // Stop acting like a button
+	        e.preventDefault();
+	        // Get the field name
+	        var quantity = parseInt($('#quantity').val());
+	
+	        // If is not undefined
+	
+	        $('#quantity').val(quantity + 1);
+	
+	
+	    });
+	
+	    $('.quantity-left-minus').click(function (e) {
+	        // Stop acting like a button
+	        e.preventDefault();
+	        // Get the field name
+	        var quantity = parseInt($('#quantity').val());
+	
+	        // If is not undefined
+	
+	        // Increment
+	        if (quantity > 0) {
+	            $('#quantity').val(quantity - 1);
+	        }
+	    });
+	
+	});
+	</script>
+
+
+</html>

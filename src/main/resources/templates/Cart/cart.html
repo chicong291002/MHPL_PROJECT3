@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="stylesheet" href="/css/cart.css">
+</head>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<body class="goto-here">
+	<div class="hero-wrap hero-bread">
+		<div class="container">
+			<div
+				class="row no-gutters slider-text align-items-center justify-content-center">
+				<div class="col-md-9 ftco-animate text-center">
+					<h1 class="mb-0 bread"
+						th:text="'Giỏ hàng của ' + ${session?.customer?.fullName}"></h1>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<section class="ftco-section ftco-cart">
+		<div class="container">
+
+			<div class="row justify-content-between">
+				<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+					<div class="cart-total mb-3">
+						<p>Nhập Địa Chỉ Giao Hàng</p>
+						<form class="info">
+							<div class="form-group">
+								<label for="">Tỉnh / Thành Phố</label> <input id="city"
+									type="text" class="form-control text-left px-3" placeholder="">
+							</div>
+							<div class="form-group">
+								<label for="country">Xã, Huyện / Phường, Quận</label> <input
+									id="district" type="text" class="form-control text-left px-3"
+									placeholder="">
+							</div>
+							<div class="form-group">
+								<label for="country">Số nhà, đường</label> <input
+									id="apartment_number" type="text"
+									class="form-control text-left px-3" placeholder="">
+							</div>
+							<div class="form-group">
+								<label for="country">Ghi Chú</label>
+								<textarea id="note" type="text" rows="10"
+									class="form-control text-left px-3"></textarea>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12 ftco-animate">
+						<div class="cart-list" id="main-cart">
+							<table class="table">
+								<thead class="thead-primary">
+									<tr class="text-center">
+										<th>&nbsp;</th>
+										<th>Hình Ảnh</th>
+										<th>Tên Sản Phẩm</th>
+										<th>Giá</th>
+										<th>Số Lượng</th>
+										<th>Tổng</th>
+									</tr>
+								</thead>
+								<tbody id="table_cart">
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-lg-4 mt-5 cart-wrap ftco-animate">
+					<div class="cart-total mb-3">
+						<h3>Tổng Giỏ Hàng</h3>
+						<p class="d-flex">
+							<span>Tổng Phụ</span> <span id="subTotal">0 VND</span>
+						</p>
+						<p class="d-flex">
+							<span>Vận Chuyển</span> <span>0 VND</span>
+						</p>
+						<p class="d-flex">
+							<span>Giảm Giá</span> <span>0 VND</span>
+						</p>
+						<hr>
+						<p class="d-flex total-price">
+							<span>Tổng</span> <span id="total">0 VND</span>
+						</p>
+					</div>
+					<button id="datHang" class="btn btn-primary py-3 px-4">Đặt
+						Hàng !</button>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+
+
+<script>
+	    $(document).ready(function () {
+	        $.ajax({
+	            type: "POST",
+	            url: "/gio-hang",
+	            success: function (response) {
+	                if (response.success === true) {
+	                    console.log(response)
+	                    loadListCart(response.data)
+	                }
+	                else {
+	                    swal.fire({
+	                        title: "Lỗi",
+	                        text: response.message,
+	                        icon: 'error'
+	                    })
+	                }
+	            }
+	        })
+	    })
+	
+	
+	</script>
+
+<script>
+    $(document).ready(function () {
+        $("#datHang").click(function (e) {
+
+            if ("[[${session?.customer}]]" === "") {
+                Swal.fire({
+                    title: 'Lỗi mua hàng',
+                    text: "Bạn cần phải đăng nhập trước khi mua hàng :D!",
+                    icon: 'error',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đăng nhập!',
+                    cancelButtonText: 'Thôi tôi không mua nữa'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location = "/dang-nhap"
+                    }
+                })
+                return;
+            }
+
+            if ($("#apartment_number").val().trim() === "" || $("#district").val().trim() === "" || $("#city").val().trim() === "") {
+                Swal.fire({
+                    title: "Lỗi thông tin",
+                    text: "Bạn thấy mấy ô nhập thông tin phía bên trái không ? Vui lòng nhập đầy đủ vào đó nhé !",
+                    icon: 'error'
+                })
+                return;
+            }
+
+            const dataBody = {
+                customerId: Number("[[${session?.customer?.customerId}]]"),
+                note: $("#note").val(),
+                address: $("#apartment_number").val() + ", " + $("#district").val() + ", " + $("#city").val(),
+            }
+
+            console.log(dataBody)
+
+            $.ajax({
+                url: "/gio-hang/luu-hoa-don",
+                type: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify(dataBody),
+                success: function (response) {
+                    if (response.success === true) {
+                        Swal.fire({
+                            title: 'Thành Công',
+                            icon: 'success',
+                            text: response.message
+                        }).then((result) => {
+                            window.location = "/gio-hang"
+                        })
+                    } else {
+                        Swal.fire({
+                            title: 'Thất Bại',
+                            icon: 'error',
+                            text: response.message
+                        })
+                    }
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    Swal.fire({
+                        title: "Có lỗi xảy ra",
+                        text: "Vui lòng thử lại sau",
+                        icon: "error",
+                    })
+                }
+            })
+        })
+    })
+</script>
+
+<script>
+    function removeProduct(id) {
+        Swal.fire({
+            title: 'Bạn có muốn xóa sản phẩm này chứ ?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: "Xóa",
+            cancelButtonText: "Không"
+        }).then(result => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "/gio-hang/xoa-san-pham",
+                    contentType: 'application/json',
+                    data: JSON.stringify(id),
+                    success: function (response) {
+                        if (response.success === true) {
+                            swal.fire({
+                                title: "Thành Công",
+                                text: response.message,
+                                icon: "success"
+                            })
+                            loadListCart(response.data)
+                        } else {
+                            swal.fire({
+                                title: "Thất Bại",
+                                text: response.message,
+                                icon: "error"
+                            })
+                        }
+                    }
+                })
+            }
+        })
+
+    }
+</script>
+
+<script>
+    function loadListCart(cartDetail) {
+
+        if (cartDetail.length <= 0) {
+            $("#main-cart").html("<h1 class='heading text-center'>Bạn chưa mua gì cả !<h1>"
+
+                + "<div class='text-center'><a href='/cua-hang' class='btn btn-primary'>Quay lại cửa hàng</a></div>"
+            )
+
+            $("#subTotal").html(`0 VND`)
+            $("#total").html(`0 VND`)
+        } else {
+            $("#table_cart").empty()
+            cartDetail?.map((item, index) => {
+                $("#table_cart").append(`<tr class='text-center'>`
+                    + `<td class='product-remove'><p onclick='removeProduct(${item.toyId})' class='btn btn-primary'>Xóa</p></td>`
+
+                    + `<td class='image-prod'><div class='img' <img src="/images/${item.image}" /></div></td>`
+
+                    + `<td class='product-name'><h3><a href='/san-pham/${item.toyId}'>${item.name}</a></h3><p>Far far away, behind the word mountains, far from the countries</p></td>`
+
+                    + `<td class='price'>${item.price} VND</td>`
+
+                    + `<td class='quantity text-center'><div class='input-group mb-3'>${item.quantity}</div></td>`
+
+                    + `<td class='total'>${item.subTotal} VND</td>`
+                    + `</tr>`
+                )
+            })
+            const total = cartDetail?.reduce((accumulator, currentValue) => accumulator + currentValue.subTotal, 0)
+            $("#subTotal").html(`${total} VND`)
+            $("#total").html(`${total} VND`)
+        }
+    }
+</script>
+</html>
